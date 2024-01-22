@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement web worker</title>
+    <style>
+        section {
+            border: 2px dashed gray;
+            margin: 12px;
+            padding: 12px;
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 3fr));
+            gap: 12px;
+            background-color: #fff;
+        }
+
+        div {
+            background: rgb(207, 212, 206);
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px;
+            transition: all .5s;
+            cursor: pointer;
+        }
+
+        div:hover {
+            font-size: 16px;
+            padding: 12px;
+            font-weight: 800;
+            background: rgb(250, 196, 173);
+        }
+    </style>
+</head>
+
+<body>
+    <section></section>
+
+    <script>
+        const w = new Worker('utils.js');
+        w.postMessage('loadPost');
+        w.onmessage = (e) => {
+            const posts = e.data;
+            const posts_wrapper = document.querySelector("section");
+
+            posts.forEach((_post) => {
+                const post = `
+                    <div data-postId="${_post.id}">
+                        <h1>${_post.title}</h1>
+                        <p>${_post.body}</>
+                        <span>Author - ${_post.userId}</span>     
+                    </div>
+                `
+                posts_wrapper.innerHTML += post;
+            })
+        };
+    </script>
+</body>
+
+</html>
